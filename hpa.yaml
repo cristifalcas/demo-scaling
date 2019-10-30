@@ -1,0 +1,13 @@
+# This HPA scales up when CPU exceeds 50% of the allocated container resource.
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: resource-consumer
+spec:
+  maxReplicas: 10
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: resource-consumer
+  targetCPUUtilizationPercentage: 50

@@ -1,0 +1,19 @@
+alertmanager:
+  service:
+    type: LoadBalancer
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+
+grafana:
+  adminPassword: admin
+  service:
+    type: LoadBalancer
+
+prometheus:
+  service:
+    type: LoadBalancer
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+    maxUnavailable: ""

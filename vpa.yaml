@@ -1,0 +1,36 @@
+# RecommendedContainerResources
+# target: The recommended CPU request and memory request for the container.
+# lowerBound: The minimum recommended CPU request and memory request for the container.
+#             This amount is not guaranteed to be sufficient for the application to be stable
+# upperBound: The maximum recommended CPU request and memory request for the container.
+#             CPU and memory requests higher than these values are likely to be wasted.
+# uncappedTarget: The most recent resource recommendation computed by the autoscaler,
+#                 based on actual resource usage, not taking into account the ContainerResourcePolicy.
+#                 This field does not affect actual resource assignment. It is used only as a status indication.
+apiVersion: "autoscaling.k8s.io/v1beta2"
+kind: VerticalPodAutoscaler
+metadata:
+  name: resource-consumer
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind: Deployment
+    name: resource-consumer
+  updatePolicy:
+    # "Auto" (equivalent to "Recreate"): VPA assigns resource requests on pod creation as well as updates them on existing pods
+    #   using the preferred update mechanism
+    # "Initial": VPA only assigns resource requests on pod creation and never changes them later.
+    # "Off": VPA does not automatically change resource requirements of the pods.
+    #   The recommendations are calculated and can be inspected in the VPA object.
+    updateMode: "Auto"
+  # resourcePolicy:
+  #   containerPolicies:
+  #   - containerName: resource-consumer
+  #     minAllowed:
+  #       memory: 100Mi
+  #       cpu: 200
+  #     maxAllowed:
+  #       memory: 1Gi
+  #       cpu: 800
+  #     mode: Auto
+

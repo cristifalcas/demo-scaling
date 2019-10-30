@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: resource-consumer
+spec:
+  ports:
+  - nodePort: 31923
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: resource-consumer
+  type: LoadBalancer
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: resource-consumer
+  name: resource-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: resource-consumer
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: resource-consumer
+    spec:
+      containers:
+      - image: gcr.io/kubernetes-e2e-test-images/resource-consumer:1.4
+        imagePullPolicy: IfNotPresent
+        name: resource-consumer
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 500m
+            memory: 256Mi
+          limits:
+            cpu: 2000m
+            memory: 1Gi
